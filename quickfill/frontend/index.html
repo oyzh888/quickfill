@@ -1,0 +1,112 @@
+<html>
+<head>
+    <title>AI Form Filler Interface</title>
+    <script src="https://unpkg.com/react/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"></link>
+</head>
+<body>
+    <div id="app"></div>
+
+    <script type="text/babel">
+        class App extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = {
+                    formAFile: null,
+                    formBFile: null,
+                    aiGeneratedFile: null
+                };
+            }
+
+            handleFileChange = (event, fileKey) => {
+                const file = event.target.files[0];
+                if (file) {
+                    this.setState({
+                        [fileKey]: file,
+                        [`${fileKey}Preview`]: URL.createObjectURL(file)
+                    });
+                }
+            }
+
+            handleSubmit = async () => {
+                const formData = new FormData();
+                formData.append('form_a_file', this.state.formAFile);
+                formData.append('form_b_file', this.state.formBFile);
+
+                try {
+                    const response = await fetch('http://127.0.0.1:8080/gpt4v_general_fill_form_files', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'accept': 'application/json',
+                            // 'Content-Type': 'multipart/form-data' is not needed here as fetch will set it correctly with the boundary
+                        }
+                    });
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const result = await response.blob(); // Assuming the server returns a PDF file as a blob
+                    this.setState({ aiGeneratedFile: URL.createObjectURL(result) });
+                } catch (error) {
+                    console.error('Error submitting files:', error);
+                }
+            }
+
+            render() {
+                const { formAFilePreview, formBFilePreview, aiGeneratedFile } = this.state;
+
+                return (
+                    <div className="bg-gray-100 min-h-screen p-8">
+                        <div className="max-w-2xl mx-auto">
+                            <FileUploadSection
+                                title="Form A File"
+                                onFileChange={(event) => this.handleFileChange(event, 'formAFile')}
+                            />
+                            <FileUploadSection
+                                title="Form B File"
+                                onFileChange={(event) => this.handleFileChange(event, 'formBFile')}
+                            />
+                            <button className="w-full bg-black text-white py-3 mt-6" onClick={this.handleSubmit}>
+                                Submit Files
+                            </button>
+                            <div className="grid grid-cols-2 gap-4 mt-6">
+                                {formAFilePreview && <UploadedFile title="Uploaded Form A File" file={formAFilePreview} />}
+                                {formBFilePreview && <UploadedFile title="Uploaded Form B File" file={formBFilePreview} />}
+                            </div>
+                            <div className="mt-6">
+                                {aiGeneratedFile && <UploadedFile title="AI Generated Result" file={aiGeneratedFile} isPdf={true} />}
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+        }
+
+        function FileUploadSection({ title, onFileChange }) {
+            return (
+                <div className="flex items-center justify-between py-4">
+                    <label className="font-semibold">{title}</label>
+                    <input type="file" onChange={onFileChange} className="border border-gray-300 text-gray-800 py-1 px-3" />
+                </div>
+            );
+        }
+
+        function UploadedFile({ title, file, isPdf }) {
+            return (
+                <div className="bg-white p-4 shadow rounded">
+                    {isPdf ? (
+                        <iframe src={file} className="border border-gray-300 rounded w-full h-96" style={{ height: '500px' }}></iframe> // Adjusted height here
+                    ) : (
+                        <img src={file} alt={`Preview of ${title}`} className="border border-gray-300 rounded w-full h-64" />
+                    )}
+                    <div className="text-center mt-4 font-semibold">{title}</div>
+                </div>
+            );
+        }
+        ReactDOM.render(<App />, document.getElementById('app'));
+    </script>
+</body>
+</html>
