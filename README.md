@@ -2,14 +2,28 @@
 
 QuickFill is an AI-powered form-filling application that simplifies the process of filling out forms by using image uploads. It leverages GPT-4 Vision and AWS OCR technology to extract information from provided images and fill the forms accurately.
 
+Currently we only support English due to the AWS TextExtractor only support En.
+
 ## Installation
 
 To get started with QuickFill, you need to set up the application on your local environment. Follow these steps:
 
 ```bash
-pip install -e .
+cd quickfill
 pip install -r requirements.txt
 ```
+
+### AWS
+Make sure you can access AWS TextExtraction Service.
+Eg:
+```aws
+pip install boto3
+pip install awscli
+aws configure
+```
+Feel free to check the https://chat.openai.com/share/588c9fbd-c783-4276-9db3-43da8e4288de
+or search "How to setup AWS" at AWS official website.
+
 
 ## Setup
 
@@ -23,11 +37,22 @@ Before using QuickFill, you need to configure your OpenAI and AWS credentials. T
 To launch QuickFill, navigate to the application's directory and run the provided script. Then, access the application through your web browser:
 
 ```bash
-cd quickfill
+# Start the backend
 sh run.sh
+
+# Start the frontend
+cd quickfill/ui
+python3 -m http.server
+
+# Open the demo
+## This one use the GPT4-Vision
+http://localhost:8000
+
+## This one uses the AWS OCR service
+http://localhost:8000/ocr_fill.html
 ```
 
-Visit `localhost:8080` in your browser to access QuickFill frontend.
+Visit `localhost:8080` in your browser to access QuickFill backend.
 Visit `localhost:8080/docs` to see the API doc.
 
 ## Frontend
@@ -61,13 +86,13 @@ Currently, QuickFill only supports English, due to the reliance on AWS OCR servi
 If you use QuickFill in your research or project, please cite the following paper:
 
 ```bibtex
-@article{qin2023openvoice,
-  title={OpenVoice: Versatile Instant Voice Cloning},
-  author={Qin, Zengyi and Zhao, Wenliang and Yu, Xumin and Sun, Xin},
-  journal={arXiv preprint arXiv:2312.01479},
-  year={2023}
+@article{quickfill2024,
+  title={Quickfill: AI form filling tech},
+  author={Zhihao Ouyang, Haowen Guo},
+  journal={github},
+  year={2024}
 }
 ```
 
 Thank you for choosing QuickFill!
-```
+
