@@ -4,6 +4,8 @@ QuickFill is an AI-powered form-filling application that simplifies the process 
 
 Currently we only support English due to the AWS TextExtractor only support En.
 
+![demo](./demo.jpg)
+
 ## Installation
 
 To get started with QuickFill, you need to set up the application on your local environment. Follow these steps:
@@ -13,9 +15,14 @@ cd quickfill
 pip install -r requirements.txt
 ```
 
-### AWS
-Make sure you can access AWS TextExtraction Service.
-Eg:
+## API Key
+
+Before using QuickFill, you need to configure your OpenAI and AWS credentials. These keys are essential for the application to function properly.
+
+1. OpenAI API Key: Set up your OpenAI API key to enable GPT-4 Vision capabilities.
+2. AWS Access Key: Configure your AWS access key to use AWS OCR services.
+Eg: Make sure you can access AWS TextExtraction Service.
+You might want to use the following command to setup AWS env
 ```aws
 pip install boto3
 pip install awscli
@@ -24,15 +31,7 @@ aws configure
 Feel free to check the https://chat.openai.com/share/588c9fbd-c783-4276-9db3-43da8e4288de
 or search "How to setup AWS" at AWS official website.
 
-
-## Setup
-
-Before using QuickFill, you need to configure your OpenAI and AWS credentials. These keys are essential for the application to function properly.
-
-1. OpenAI API Key: Set up your OpenAI API key to enable GPT-4 Vision capabilities.
-2. AWS Access Key: Configure your AWS access key to use AWS OCR services.
-
-## How to Start
+## Quickstart
 
 To launch QuickFill, navigate to the application's directory and run the provided script. Then, access the application through your web browser:
 
@@ -51,9 +50,6 @@ http://localhost:8000
 ## This one uses the AWS OCR service
 http://localhost:8000/ocr_fill.html
 ```
-
-Visit `localhost:8080` in your browser to access QuickFill backend.
-Visit `localhost:8080/docs` to see the API doc.
 
 ## Frontend
 
