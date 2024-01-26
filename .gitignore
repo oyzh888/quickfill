@@ -1,3 +1,8 @@
+# quickfill
+data
+## Caches
+data/cache
+
 .DS_Store
 *.mp3
 *.json
